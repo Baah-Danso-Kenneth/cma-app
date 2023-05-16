@@ -25,9 +25,9 @@ class Product(models.Model):
         OUT_DOOR='OUT DOOR'
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='customer')
     name = models.CharField(max_length=30)
-    price = models.FloatField()
+    price = models.FloatField(null=True)
     category = models.CharField(max_length=15, choices=Category.choices, default=Category.IN_DOOR)
-    description = models.TextField()
+    description = models.TextField(null=True)
     tags=models.ManyToManyField(Tags)
     date_created = models.DateTimeField(auto_now_add=True)
 
