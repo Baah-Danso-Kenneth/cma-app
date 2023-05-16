@@ -15,7 +15,10 @@ class Customer(models.Model):
     def __str__(self):
         return self.name
 
-
+class Tags(models.Model):
+    name= models.CharField(max_length=10)
+    def __str__(self):
+        return self.name
 class Product(models.Model):
     class Category(models.TextChoices):
         IN_DOOR='IN DOOR'
@@ -25,6 +28,7 @@ class Product(models.Model):
     price = models.FloatField()
     category = models.CharField(max_length=15, choices=Category.choices, default=Category.IN_DOOR)
     description = models.TextField()
+    tags=models.ManyToManyField(Tags)
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -40,3 +44,6 @@ class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='order_customer')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='order_product')
     status = models.CharField(max_length=30, choices=Status.choices, default=Status.PENDING)
+
+    def __str__(self):
+        return f"{self.customer.name} ordered {self.product.name}"
