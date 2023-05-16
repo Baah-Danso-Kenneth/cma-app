@@ -37,7 +37,7 @@ class Product(models.Model):
 
 class Order(models.Model):
     class Status(models.TextChoices):
-        PENDING = 'OUT DOOR'
+        PENDING = 'PENDING'
         DELIVERED = 'DELIVERED'
         OUT_OF_STOCK = 'OUT OF STOCK'
 

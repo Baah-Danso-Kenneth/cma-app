@@ -1,11 +1,31 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from accounts.models import Product, Customer, Order
 
-# Create your views here.
+
 def dashboard(request):
-    return render(request,'accounts/dashboard.html')
+    customers=Customer.objects.all()
+    products=Product.objects.all()
+    orders=Order.objects.all()
 
-def products(request):
-    return render(request, 'accounts/products.html')
+    total_orders=orders.count()
+    orders_delivered=orders.filter(status='DELIVERED').count()
+    orders_pending=orders.filter(status='PENDING').count()
 
-def customer(request):
-    return render(request, 'accounts/customer.html')
+    context={'customers':customers,
+             'products':products,
+             'orders':orders,
+             'total_orders':total_orders,
+             'orders_delivered':orders_delivered,
+             'orders_pending':orders_pending}
+
+    return render(request, 'accounts/dashboard.html',context)
+
+
+def products_view(request):
+    products = Product.objects.all()
+    return render(request, 'accounts/products.html', {'products': products})
+
+
+def customer_view(request):
+    customers= Customer.objects.all()
+    return render(request, 'accounts/customer.html',{'customers':customers})
