@@ -47,7 +47,7 @@
 					 <td>{{order.product.date_created}}</td>
 					 <td>{{order.status}}</td>
 					 <td><a href="{%url 'accounts:update_order' order.id%}">update</a></td>
-					 <td><a href="">delete</a></td>
+					 <td><a href="{%url 'accounts:delete_order' order.id%}">delete</a></td>
 
 
 				 </tr>

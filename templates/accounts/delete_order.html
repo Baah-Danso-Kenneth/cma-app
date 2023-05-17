@@ -1,0 +1,11 @@
+{%extends 'accounts/main.html'%}
+{%block title%}Confirm Deletion{%endblock%}
+
+{%block content%}
+ <h3>Are you sure you want to delete "{{item}}"?</h3>
+<a href="{%url 'accounts:dashboard'%}">Cancel</a>
+<form action="" method="post">
+ {%csrf_token%}
+ <input type="submit" value="delete">
+</form>
+{%endblock%}

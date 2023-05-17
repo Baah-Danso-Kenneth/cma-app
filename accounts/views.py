@@ -47,6 +47,18 @@ def create_order_form(request):
 
 def update_order_form(request,pk):
     order=Order.objects.get(id=pk)
-    form=OrderForm()
+    form=OrderForm(instance=order)
+    if request.method=='POST':
+        form=OrderForm(request.POST,instance=order)
+        form.save()
+        return redirect('/account/dashboard/')
     context={'order':order,'form':form}
     return render(request,'accounts/order_form.html',context)
+
+def delete_order_form(request,pk):
+    order=Order.objects.get(id=pk)
+    if request.method=='POST':
+        order.delete()
+        return redirect('/account/dashboard/')
+    context={'item':order}
+    return render(request,'accounts/delete_order.html',context)
