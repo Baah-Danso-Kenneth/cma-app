@@ -23,7 +23,7 @@ class Product(models.Model):
     class Category(models.TextChoices):
         IN_DOOR='IN DOOR'
         OUT_DOOR='OUT DOOR'
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='customer')
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='customer_product')
     name = models.CharField(max_length=30)
     price = models.FloatField(null=True)
     category = models.CharField(max_length=15, choices=Category.choices, default=Category.IN_DOOR)

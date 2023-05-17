@@ -5,6 +5,6 @@ app_name = 'accounts'
 
 urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
-    path('customer/',views.customer_view,name='customer'),
-    path('products/',views.products_view,name='product')
+    path('customer/<int:id>/', views.customer_view,name='customer'),
+    path('products/', views.products_view,name='product')
 ]

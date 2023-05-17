@@ -26,6 +26,7 @@ def products_view(request):
     return render(request, 'accounts/products.html', {'products': products})
 
 
-def customer_view(request):
-    customers= Customer.objects.all()
-    return render(request, 'accounts/customer.html',{'customers':customers})
+def customer_view(request,id=None):
+    customer= get_object_or_404(Customer,id=id)
+    orders=Order.objects.all()
+    return render(request, 'accounts/customer.html',{'customer':customer,'orders':orders})
