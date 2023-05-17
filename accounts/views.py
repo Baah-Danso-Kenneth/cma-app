@@ -1,4 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+
+from accounts.forms import OrderForm
 from accounts.models import Product, Customer, Order
 
 
@@ -26,7 +28,25 @@ def products_view(request):
     return render(request, 'accounts/products.html', {'products': products})
 
 
-def customer_view(request,id=None):
-    customer= get_object_or_404(Customer,id=id)
-    orders=Order.objects.all()
-    return render(request, 'accounts/customer.html',{'customer':customer,'orders':orders})
+def customer_view(request,pk):
+    customer= Customer.objects.get(id=pk)
+    orders=customer.order_set.all()
+    context={'customer':customer, 'orders':orders}
+    return render(request, 'accounts/customer.html',context)
+
+def create_order_form(request):
+    form=OrderForm()
+    if request.method=='POST':
+        form=OrderForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/account/dashboard')
+    context={'form':form}
+    return render(request,'accounts/order_form.html',context)
+
+
+def update_order_form(request,pk):
+    order=Order.objects.get(id=pk)
+    form=OrderForm()
+    context={'order':order,'form':form}
+    return render(request,'accounts/order_form.html',context)

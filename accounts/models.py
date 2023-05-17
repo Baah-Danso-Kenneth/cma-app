@@ -23,7 +23,7 @@ class Product(models.Model):
     class Category(models.TextChoices):
         IN_DOOR='IN DOOR'
         OUT_DOOR='OUT DOOR'
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='customer_product')
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     name = models.CharField(max_length=30)
     price = models.FloatField(null=True)
     category = models.CharField(max_length=15, choices=Category.choices, default=Category.IN_DOOR)
@@ -41,9 +41,9 @@ class Order(models.Model):
         DELIVERED = 'DELIVERED'
         OUT_OF_STOCK = 'OUT OF STOCK'
 
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='order_customer')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='order_product')
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     status = models.CharField(max_length=30, choices=Status.choices, default=Status.PENDING)
 
     def __str__(self):
-        return f"{self.customer.name} ordered {self.product.name}"
+        return f" {self.product.name}"
