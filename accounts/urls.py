@@ -11,5 +11,10 @@ urlpatterns = [
     #crud
     path('create-order/',views.create_order_form,name='create_order'),
     path('update-order/<str:pk>/',views.update_order_form, name='update_order'),
-    path('delete-order/<str:pk>/',views.delete_order_form, name='delete_order')
+    path('delete-order/<str:pk>/',views.delete_order_form, name='delete_order'),
+
+    #authentication
+    path('register/users',views.registerUser, name='register'),
+    path('login/users',views.loginUser, name='login'),
+    path('logout/users', views.logoutUser, name='logout')
 ]

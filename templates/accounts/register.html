@@ -1,0 +1,23 @@
+<h2>Register</h2>
+<div>
+    <form action="" method="post">
+        {%for message in messages%}
+          <p>{{message}}</p>
+        {%endfor%}
+        {{form.username.label}}
+        {{form.username}}<br>
+
+        {{form.email.label}}
+        {{form.email}}<br>
+
+        {{form.password1.label}}
+        {{form.password1}}<br>
+
+        {{form.password2.label}}
+        {{form.password2}}<br>
+
+
+        {%csrf_token%}
+        <input type="submit" value="login">
+    </form>
+</div>
