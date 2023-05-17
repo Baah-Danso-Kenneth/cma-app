@@ -15,7 +15,7 @@
 					<th>Category</th>
 					<th>Price</th>
 				</tr>
-				{% for product in products %}
+				{% for product in posts %}
 					<tr>
 						<td>{{product.name}}</td>
 						<td>{{product.category}}</td>
@@ -25,7 +25,7 @@
 			</table>
 		</div>
 	</div>
-
+{%include 'accounts/paginator.html' with page=posts%}
 </div>
 
 {% endblock content %}

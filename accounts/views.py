@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from accounts.forms import OrderForm
 from accounts.models import Product, Customer, Order
 
@@ -24,8 +24,17 @@ def dashboard(request):
 
 
 def products_view(request):
-    products = Product.objects.all()
-    return render(request, 'accounts/products.html', {'products': products})
+    products_list = Product.objects.all()
+
+    paginator=Paginator(products_list,5)
+    page_number=request.GET.get('page',1)
+    try:
+        posts=paginator.page(page_number)
+    except EmptyPage:
+        posts=paginator.page(page_number.numb_pages)
+    except PageNotAnInteger:
+        paginator.page(1)
+    return render(request, 'accounts/products.html', {'posts':posts})
 
 
 def customer_view(request,pk):
@@ -62,3 +71,7 @@ def delete_order_form(request,pk):
         return redirect('/account/dashboard/')
     context={'item':order}
     return render(request,'accounts/delete_order.html',context)
+
+
+def registerUser(request):
+    pass
