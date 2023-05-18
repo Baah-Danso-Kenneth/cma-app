@@ -3,15 +3,15 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from accounts.decorators import unauthenticated_user, allowed_users
+from accounts.decorators import unauthenticated_user, allowed_users, admin_only
 from accounts.forms import OrderForm, CreateUserForm, LoginUserForm
 from accounts.models import Product, Customer, Order
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth.models import Group
 
 @login_required(login_url='/account/login/users')
-@allowed_users(allowed_roles=['admin'])
+@admin_only
 def dashboard(request):
     customers = Customer.objects.all()
     products = Product.objects.all()
@@ -98,9 +98,12 @@ def registerUser(request):
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         if form.is_valid():
-            form.save()
-            user = form.cleaned_data.get('username')
-            messages.success(request, 'Successfully created' + user)
+            user=form.save()
+            username = form.cleaned_data.get('username')
+            group=Group.objects.get(name='customer')
+            user.groups.add(group)
+            messages.success(request, 'Successfully created' + username)
+
             return redirect('/account/login/users')
     form = CreateUserForm()
     context = {'form': form}
@@ -133,4 +136,4 @@ def logoutUser(request):
 
 def user_view(request):
     context = {}
-    return render(request, 'account/user.html', context)
+    return render(request, 'accounts/user_page.html', context)
