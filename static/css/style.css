@@ -1,0 +1,10 @@
+*{
+  margin:0px;
+  padding:0px;
+  background-color:red;
+}
+
+body{
+  max-width:80%;
+  margin:0 auto;
+}
