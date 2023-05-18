@@ -126,3 +126,8 @@ def loginUser(request):
 def logoutUser(request):
     logout(request)
     return redirect('/account/login/users')
+
+
+def user_view(request):
+    context={}
+    return render(request,'account/user.html',context)
