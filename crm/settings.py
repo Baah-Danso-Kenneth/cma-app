@@ -31,13 +31,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "accounts.apps.AccountsConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "accounts.apps.AccountsConfig",
 ]
 
 MIDDLEWARE = [
@@ -125,3 +125,13 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+#Email Server Configuration
+EMAIL_HOST='smtp.gmail.com'
+EMAIL_HOST_USER='dansobaahkenneth@gmail.com'
+EMAIL_HOST_PASSWORD='aceezpmbczisrwxp'
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+
+MEDIA_URL='/images/'
+MEDIA_ROOT= os.path.join(BASE_DIR, 'static/images')

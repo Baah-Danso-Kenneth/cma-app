@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from accounts.models import Order
+from accounts.models import Order, Customer
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
@@ -17,3 +17,10 @@ class CreateUserForm(UserCreationForm):
 class LoginUserForm(forms.Form):
     username = forms.CharField(max_length=30)
     password=forms.CharField(widget=forms.PasswordInput)
+
+
+class CustomerForm(ModelForm):
+    class Meta:
+        model=Customer
+        fields= '__all__'
+        exclude=['user']
