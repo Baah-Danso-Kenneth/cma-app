@@ -16,5 +16,8 @@ urlpatterns = [
     #authentication
     path('register/users',views.registerUser, name='register'),
     path('login/users',views.loginUser, name='login'),
-    path('logout/users', views.logoutUser, name='logout')
+    path('logout/users', views.logoutUser, name='logout'),
+
+    path('user/view',views.user_view, name='user_view'),
+
 ]

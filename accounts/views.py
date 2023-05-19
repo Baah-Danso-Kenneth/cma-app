@@ -2,13 +2,16 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from accounts.decorators import unauthenticated_user, allowed_users, admin_only
 from accounts.forms import OrderForm, CreateUserForm, LoginUserForm
 from accounts.models import Product, Customer, Order
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
 
 
 @login_required(login_url='/account/login/users')
+@admin_only
 def dashboard(request):
     customers = Customer.objects.all()
     products = Product.objects.all()
@@ -29,6 +32,7 @@ def dashboard(request):
 
 
 @login_required(login_url='/account/login/users')
+@allowed_users(allowed_roles=['admin'])
 def products_view(request):
     products_list = Product.objects.all()
 
@@ -44,6 +48,7 @@ def products_view(request):
 
 
 @login_required(login_url='/account/login/users')
+@allowed_users(allowed_roles=['admin'])
 def customer_view(request, pk):
     customer = Customer.objects.get(id=pk)
     orders = customer.order_set.all()
@@ -52,6 +57,7 @@ def customer_view(request, pk):
 
 
 @login_required(login_url='/account/login/users')
+@allowed_users(allowed_roles=['admin'])
 def create_order_form(request):
     form = OrderForm()
     if request.method == 'POST':
@@ -64,6 +70,7 @@ def create_order_form(request):
 
 
 @login_required(login_url='/account/login/users')
+@allowed_users(allowed_roles=['admin'])
 def update_order_form(request, pk):
     order = Order.objects.get(id=pk)
     form = OrderForm(instance=order)
@@ -76,6 +83,7 @@ def update_order_form(request, pk):
 
 
 @login_required(login_url='/account/login/users')
+@allowed_users(allowed_roles=['admin'])
 def delete_order_form(request, pk):
     order = Order.objects.get(id=pk)
     if request.method == 'POST':
@@ -85,44 +93,63 @@ def delete_order_form(request, pk):
     return render(request, 'accounts/delete_order.html', context)
 
 
+@unauthenticated_user
 def registerUser(request):
-    if request.user.is_authenticated:
-        return redirect('/account/dashboard/')
-    else:
-        if request.method == 'POST':
-            form = CreateUserForm(request.POST)
-            if form.is_valid():
-                form.save()
-                user = form.cleaned_data.get('username')
-                messages.success(request, 'Successfully created' + user)
-                return redirect('/account/login/users')
-        form = CreateUserForm()
-        context = {'form': form}
-        return render(request, 'accounts/register.html', context)
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            username = form.cleaned_data.get('username')
+            group = Group.objects.get(name='customer')
+            user.groups.add(group)
+            Customer.objects.create(
+                user=user,
+            )
+            messages.success(request, 'Successfully created' + username)
+
+            return redirect('/account/login/users')
+    form = CreateUserForm()
+    context = {'form': form}
+    return render(request, 'accounts/register.html', context)
 
 
+@unauthenticated_user
 def loginUser(request):
-    if request.user.is_authenticated:
-        return redirect('/account/dashboard/')
+    if request.method == 'POST':
+        form = LoginUserForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            user = authenticate(request, username=cd['username'], password=cd['password'])
+
+            if user is not None:
+                login(request, user)
+                return redirect('/account/dashboard/')
+            else:
+                messages.info(request, 'Username and password incorrect')
     else:
-        if request.method == 'POST':
-            form = LoginUserForm(request.POST)
-            if form.is_valid():
-                cd = form.cleaned_data
-                user = authenticate(request, username=cd['username'], password=cd['password'])
-
-                if user is not None:
-                    login(request, user)
-                    return redirect('/account/dashboard/')
-                else:
-                    messages.info(request, 'Username and password incorrect')
-        else:
-            form = LoginUserForm()
-        context = {'form': form}
-        return render(request, 'accounts/login.html', context)
+        form = LoginUserForm()
+    context = {'form': form}
+    return render(request, 'accounts/login.html', context)
 
 
-@login_required(login_url='/account/login/users')
 def logoutUser(request):
     logout(request)
     return redirect('/account/login/users')
+
+
+@login_required(login_url='/account/login/users')
+@allowed_users(allowed_roles=['customer'])
+def user_view(request):
+    order= request.user.customer.order_set.all()
+    total_orders=order.count()
+    orders_pending=order.filter(status='PENDING').count()
+    orders_delivered=order.filter(status='DELIVERED').count()
+    print(order)
+
+    context = {'order':order,
+               'total_orders': total_orders,
+               'orders_delivered': orders_delivered,
+               'orders_pending': orders_pending
+               }
+
+    return render(request, 'accounts/user_page.html', context)
