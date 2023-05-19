@@ -141,10 +141,11 @@ def logoutUser(request):
 @allowed_users(allowed_roles=['customer'])
 def user_view(request):
     order= request.user.customer.order_set.all()
+    print(order)
     total_orders=order.count()
     orders_pending=order.filter(status='PENDING').count()
     orders_delivered=order.filter(status='DELIVERED').count()
-    print(order)
+    print('vrom', order)
 
     context = {'order':order,
                'total_orders': total_orders,
