@@ -1,9 +1,11 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 # Create your models here.
 class Customer(models.Model):
-    name = models.CharField(max_length=30)
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    name = models.CharField(max_length=30, null=True)
     phone = models.CharField(max_length=13, null=True)
     email = models.EmailField(null=True)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -15,20 +17,25 @@ class Customer(models.Model):
     def __str__(self):
         return self.name
 
+
 class Tags(models.Model):
-    name= models.CharField(max_length=10)
+    name = models.CharField(max_length=10)
+
     def __str__(self):
         return self.name
+
+
 class Product(models.Model):
     class Category(models.TextChoices):
-        IN_DOOR='IN DOOR'
-        OUT_DOOR='OUT DOOR'
+        IN_DOOR = 'IN DOOR'
+        OUT_DOOR = 'OUT DOOR'
+
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     name = models.CharField(max_length=30)
     price = models.FloatField(null=True)
     category = models.CharField(max_length=15, choices=Category.choices, default=Category.IN_DOOR)
     description = models.TextField(null=True)
-    tags=models.ManyToManyField(Tags)
+    tags = models.ManyToManyField(Tags)
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

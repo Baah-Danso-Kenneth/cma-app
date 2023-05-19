@@ -2,13 +2,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
 from accounts.decorators import unauthenticated_user, allowed_users, admin_only
 from accounts.forms import OrderForm, CreateUserForm, LoginUserForm
 from accounts.models import Product, Customer, Order
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
+
 
 @login_required(login_url='/account/login/users')
 @admin_only
@@ -98,10 +98,13 @@ def registerUser(request):
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         if form.is_valid():
-            user=form.save()
+            user = form.save()
             username = form.cleaned_data.get('username')
-            group=Group.objects.get(name='customer')
+            group = Group.objects.get(name='customer')
             user.groups.add(group)
+            Customer.objects.create(
+                user=user,
+            )
             messages.success(request, 'Successfully created' + username)
 
             return redirect('/account/login/users')
@@ -134,6 +137,19 @@ def logoutUser(request):
     return redirect('/account/login/users')
 
 
+@login_required(login_url='/account/login/users')
+@allowed_users(allowed_roles=['customer'])
 def user_view(request):
-    context = {}
+    order= request.user.customer.order_set.all()
+    total_orders=order.count()
+    orders_pending=order.filter(status='PENDING').count()
+    orders_delivered=order.filter(status='DELIVERED').count()
+    print(order)
+
+    context = {'order':order,
+               'total_orders': total_orders,
+               'orders_delivered': orders_delivered,
+               'orders_pending': orders_pending
+               }
+
     return render(request, 'accounts/user_page.html', context)
