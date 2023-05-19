@@ -1,0 +1,16 @@
+
+<div>
+    <div>
+        <h3>Account settings</h3>
+        <img src="{{request.user.customer.profile_pic.url}}" style="width: 30%;height:30%;object-fit:contain" alt="primary_pic">
+        <h1>Username: {{request.user.customer.name}}</h1>
+
+        <div>
+            <form  method="post">
+                {%csrf_token%}
+            {{form.as_p}}
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+</div>

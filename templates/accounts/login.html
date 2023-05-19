@@ -8,5 +8,5 @@
        {%csrf_token%}
     <input type="submit" value="login">
     <a href="{%url 'accounts:register'%}">SignUp</a>
-     <a href="{#}">Forgot password?</a>
+     <a href="{%url 'accounts:password_reset'%}">Forgot password?</a>
 </form>

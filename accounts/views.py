@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from accounts.decorators import unauthenticated_user, allowed_users, admin_only
-from accounts.forms import OrderForm, CreateUserForm, LoginUserForm
+from accounts.forms import OrderForm, CreateUserForm, LoginUserForm, CustomerForm
 from accounts.models import Product, Customer, Order
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -154,3 +154,11 @@ def user_view(request):
                }
 
     return render(request, 'accounts/user_page.html', context)
+
+@login_required(login_url='/account/login/users')
+@allowed_users(allowed_roles=['customer'])
+def account_setting(request):
+    customer=request.user.customer
+    form=CustomerForm(instance=customer)
+    context={'customer':customer,'form':form}
+    return render(request,'accounts/account_setting.html',context)

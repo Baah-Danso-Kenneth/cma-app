@@ -132,3 +132,6 @@ EMAIL_HOST_USER='dansobaahkenneth@gmail.com'
 EMAIL_HOST_PASSWORD='aceezpmbczisrwxp'
 EMAIL_PORT=587
 EMAIL_USE_TLS=True
+
+MEDIA_URL='/images/'
+MEDIA_ROOT= os.path.join(BASE_DIR, 'static/images')
