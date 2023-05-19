@@ -160,5 +160,10 @@ def user_view(request):
 def account_setting(request):
     customer=request.user.customer
     form=CustomerForm(instance=customer)
-    context={'customer':customer,'form':form}
+
+    if request.method=='POST':
+        form=CustomerForm(request.POST, request.FILES, instance=customer)
+        if form.is_valid():
+            form.save()
+    context={'form':form}
     return render(request,'accounts/account_setting.html',context)

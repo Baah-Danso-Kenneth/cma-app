@@ -6,7 +6,7 @@
         <h1>Username: {{request.user.customer.name}}</h1>
 
         <div>
-            <form  method="post">
+            <form  method="post" enctype="multipart/form-data">
                 {%csrf_token%}
             {{form.as_p}}
                 <input type="submit" value="Submit">
