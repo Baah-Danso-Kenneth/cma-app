@@ -11,8 +11,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os.path
 from pathlib import Path
-
+from dotenv import load_dotenv
+import os
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
+load_dotenv()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -77,11 +82,11 @@ WSGI_APPLICATION = "crm.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'crma_1',
-        'USER': 'djangocrma',
-        'PASSWORD': 'highestgee1993#',
-        'HOST': 'database-1.cw4bkomj1qdw.eu-north-1.rds.amazonaws.com',
-        'PORT': '5432',
+        'NAME': os.environ.get("DATABASE_NAME"),
+        'USER': os.environ.get("DATABASE_USER"),
+        'PASSWORD': os.environ.get("DATABASE_PASSWORD"),
+        'HOST': os.environ.get("DATABASE_HOST"),
+        'PORT': os.environ.get("DATABASE_PORT"),
     }
 }
 
@@ -132,22 +137,22 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 #Email Server Configuration
-EMAIL_HOST='smtp.gmail.com'
-EMAIL_HOST_USER='dansobaahkenneth@gmail.com'
-EMAIL_HOST_PASSWORD='aceezpmbczisrwxp'
-EMAIL_PORT=587
-EMAIL_USE_TLS=True
+EMAIL_HOST=os.environ.get("EMAIL_HOST")
+EMAIL_HOST_USER=os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD=os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_PORT=os.environ.get("EMAIL_PORT")
+EMAIL_USE_TLS=os.environ.get("EMAIL_USE_TLS")
 
 MEDIA_URL='/images/'
 MEDIA_ROOT= os.path.join(BASE_DIR, 'static/images')
 
-AWS_ACCESS_KEY_ID = 'AKIASUWYGKVV76WMPE7S'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'crma-banky-bucket'
-AWS_S3_SIGNATURE_NAME = 's3v4',
-AWS_S3_REGION_NAME = 'eu-north-1'
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL =  None
-AWS_S3_VERITY = True
+AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
+AWS_S3_SIGNATURE_NAME = os.environ.get("AWS_S3_SIGNATURE_NAME")
+AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME")
+AWS_S3_FILE_OVERWRITE = os.environ.get("AWS_S3_FILE_OVERWRITE")
+AWS_DEFAULT_ACL =  os.environ.get("AWS_DEFAULT_ACL ")
+AWS_S3_VERITY = os.environ.get("AWS_S3_VERITY ")
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 STATICFILES_STORAGE= 'storages.backends.s3boto3.S3Boto3Storage'
