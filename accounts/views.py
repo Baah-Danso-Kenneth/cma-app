@@ -1,13 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from accounts.decorators import unauthenticated_user, allowed_users, admin_only
 from accounts.forms import OrderForm, CreateUserForm, LoginUserForm, CustomerForm
 from accounts.models import Product, Customer, Order
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group
 
 
 @login_required(login_url='/account/login/users')
@@ -135,14 +133,13 @@ def logoutUser(request):
 @login_required(login_url='/account/login/users')
 @allowed_users(allowed_roles=['customer'])
 def user_view(request):
-    order= request.user.customer.order_set.all()
+    order = request.user.customer.order_set.all()
     print(order)
-    total_orders=order.count()
-    orders_pending=order.filter(status='PENDING').count()
-    orders_delivered=order.filter(status='DELIVERED').count()
-    print('vrom', order)
+    total_orders = order.count()
+    orders_pending = order.filter(status='PENDING').count()
+    orders_delivered = order.filter(status='DELIVERED').count()
 
-    context = {'order':order,
+    context = {'order': order,
                'total_orders': total_orders,
                'orders_delivered': orders_delivered,
                'orders_pending': orders_pending
@@ -150,15 +147,16 @@ def user_view(request):
 
     return render(request, 'accounts/user_page.html', context)
 
+
 @login_required(login_url='/account/login/users')
 @allowed_users(allowed_roles=['customer'])
 def account_setting(request):
-    customer=request.user.customer
-    form=CustomerForm(instance=customer)
+    customer = request.user.customer
+    form = CustomerForm(instance=customer)
 
-    if request.method=='POST':
-        form=CustomerForm(request.POST, request.FILES, instance=customer)
+    if request.method == 'POST':
+        form = CustomerForm(request.POST, request.FILES, instance=customer)
         if form.is_valid():
             form.save()
-    context={'form':form}
-    return render(request,'accounts/account_setting.html',context)
+    context = {'form': form}
+    return render(request, 'accounts/account_setting.html', context)
